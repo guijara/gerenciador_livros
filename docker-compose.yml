@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: gerenciador_livros_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - gerenciador_livros_data:/var/lib/postgresql/data
+
+volumes:
+  gerenciador_livros_data:
