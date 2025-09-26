@@ -41,4 +41,12 @@ public class Editora {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Editora{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }

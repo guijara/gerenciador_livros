@@ -4,10 +4,9 @@ import br.com.biblioteca.connection.ConnectionFactory;
 import br.com.biblioteca.dominio.Editora;
 import lombok.extern.log4j.Log4j2;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 public class EditoraRepository {
@@ -47,5 +46,39 @@ public class EditoraRepository {
             log.error("Erro ao tentar atualizar a editora '{}'",editora.getName());
             e.printStackTrace();
         }
+    }
+
+    public static List<Editora> findAll(){
+        log.info("Procurando todas as editoras...");
+        String sql = "SELECT id,nome FROM editora;";
+        List<Editora> editoras = new ArrayList<>();
+        try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();){
+            while(rs.next()){
+                editoras.add(Editora.EditoraBuilder.anEditora().name(rs.getString("nome")).id(rs.getInt("id")).build());
+            }
+        }catch (SQLException e){
+            log.error("Erro ao tentar selecionar as editoras");
+            e.printStackTrace();
+        }
+        return editoras;
+    }
+
+    public static List<Editora> findByName(String nomeEditora){
+        log.info("Procurando editoras com nome ",nomeEditora);
+        String sql = "SELECT * FROM editora WHERE nome = (?);";
+        List<Editora> editoras = new ArrayList<>();
+        try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1,nomeEditora);
+            try (ResultSet rs = ps.executeQuery()){
+                while(rs.next()){
+                    editoras.add(Editora.EditoraBuilder.anEditora().name(rs.getString("nome")).id(rs.getInt("id")).build());
+                }
+            }
+        }catch (SQLException e){
+            log.error("Erro ao tentar selecionar a editora '{}'",nomeEditora);
+            e.printStackTrace();
+        }
+        return editoras;
     }
 }
