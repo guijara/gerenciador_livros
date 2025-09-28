@@ -66,8 +66,9 @@ public class EditoraService {
         String nomeEditora = scanner.nextLine();
         List<Editora>editoras = EditoraRepository.findByName(nomeEditora);
         for (int i = 0; i < editoras.size();i++){
-            System.out.println(i+" - "+editoras.get(i).getName());
+            System.out.println(i+" - "+editoras.get(i).getName()+" - ID "+editoras.get(i).getId());
         }
     }
+
 
 }
