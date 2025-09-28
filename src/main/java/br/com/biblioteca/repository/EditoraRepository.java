@@ -23,14 +23,14 @@ public class EditoraRepository {
         }
     }
 
-    public static void delete(Editora editora){
-        String sql = "DELETE FROM editora WHERE nome = (?);";
+    public static void delete(int id){
+        String sql = "DELETE FROM editora WHERE id = (?);";
         try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setString(1, editora.getName());
+            ps.setInt(1, id);
             ps.executeUpdate();
-            log.info("Editora '{}' removida com sucesso!",editora.getName());
+            log.info("Editora removida com sucesso!");
         }catch (SQLException e){
-            log.error("Erro ao tentar remover a editora '{}'",editora.getName());
+            log.error("Erro ao tentar remover a editora");
             e.printStackTrace();
         }
     }
@@ -80,5 +80,25 @@ public class EditoraRepository {
             e.printStackTrace();
         }
         return editoras;
+    }
+
+    public static void mostraEditora(){
+        log.info("Mostrando metadados de editoras:");
+        String sql = "SELECT * FROM editora;";
+        try(Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
+            try (ResultSet rs = ps.executeQuery()){
+                ResultSetMetaData rsmt = rs.getMetaData();
+                rs.next();
+//                log.info("Nome da Editora: '{}'",rsmt.get);
+                for(int i = 1; i <= rsmt.getColumnCount();i++){
+                    log.info("Nome da coluna: '{}'",rsmt.getColumnName(i));
+                    log.info("Tipo de dado da coluna: '{}'",rsmt.getColumnTypeName(i));
+                    log.info("Catalog Name da coluna: '{}'",rsmt.getCatalogName(i));
+                }
+            }
+        }catch (SQLException e){
+            log.error("Erro ao tentar mostrar metadados");
+            e.printStackTrace();
+        }
     }
 }
